@@ -26,7 +26,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '>= 3.2.9', '~> 3.2.0'
+  gem 'activerecord', '4.0.0.rc1'
   require 'active_record'
 end
 
@@ -63,7 +63,6 @@ require 'active_record/relation/finder_methods'
 require 'active_record/relation/query_methods'
 
 require 'active_record/validations/uniqueness'
-
 
 # CPK files
 require 'composite_primary_keys/base'
@@ -103,3 +102,5 @@ require 'composite_primary_keys/relation/finder_methods'
 require 'composite_primary_keys/relation/query_methods'
 
 require 'composite_primary_keys/validations/uniqueness'
+
+require 'composite_primary_keys/arel/visitors/to_sql.rb'

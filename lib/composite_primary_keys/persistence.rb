@@ -4,7 +4,6 @@ module ActiveRecord
       destroy_associations
 
       if persisted?
-        IdentityMap.remove(self) if IdentityMap.enabled?
         # CPK
         #pk         = self.class.primary_key
         #column     = self.class.columns_hash[pk]

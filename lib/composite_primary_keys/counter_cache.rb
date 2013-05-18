@@ -7,8 +7,6 @@ module ActiveRecord
         "#{quoted_column} = COALESCE(#{quoted_column}, 0) #{operator} #{value.abs}"
       end
 
-      IdentityMap.remove_by_id(symbolized_base_class, id) if IdentityMap.enabled?
-
       # CPK
       # update_all(updates.join(', '), primary_key => id )
       primary_key_predicate = relation.cpk_id_predicate(self.arel_table, Array(self.primary_key), Array(id))

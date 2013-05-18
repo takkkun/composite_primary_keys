@@ -33,14 +33,14 @@ module ActiveRecord
                                eq_predicates = association.klass.primary_key.zip(ids).map do |primary_key, value|
                                  association.klass.arel_table[primary_key].eq(value)
                                end
-                               association.scoped.where(*eq_predicates).to_a
+                               association.scope.where(*eq_predicates).to_a
                              else
                                []
                              end
                            end.flatten.compact
                          else
                            attribute_ids = attributes_collection.map {|a| a['id'] || a[:id] }.compact
-                           attribute_ids.empty? ? [] : association.scoped.where(association.klass.primary_key => attribute_ids)
+                           attribute_ids.empty? ? [] : association.scope.where(association.klass.primary_key => attribute_ids)
                          end
 
       attributes_collection.each do |attributes|
