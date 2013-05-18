@@ -1,9 +1,12 @@
 module ActiveRecord
   module ConnectionAdapters
     class AbstractAdapter
-      def quote_column_names(name)
+      alias original_quote_column_name quote_column_name
+
+      def quote_column_name(name)
+        puts "HOGE: #{name.inspect}"
         Array(name).map do |col|
-          quote_column_name(col.to_s)
+          original_quote_column_name(col.to_s)
         end.join(CompositePrimaryKeys::ID_SEP)
       end
     end

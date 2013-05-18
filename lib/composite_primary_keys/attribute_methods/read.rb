@@ -25,12 +25,14 @@ module ActiveRecord
         end
       end
 
+      alias original_read_attribute read_attribute
+
       def read_attribute(attr_name)
         # CPK
         if attr_name.kind_of?(Array)
           attr_name.map {|name| read_attribute(name)}.to_composite_keys
         else
-          self.class.type_cast_attribute(attr_name, @attributes, @attributes_cache)
+          original_read_attribute(attr_name)
         end
       end
     end

@@ -36,8 +36,6 @@ module ActiveRecord
             foreign_key = reflection.active_record_primary_key
           end
 
-          conditions = self.conditions[i]
-
           if reflection == chain.last
             # CPK
             # scope = scope.where(table[key].eq(owner[foreign_key]))
@@ -45,15 +43,9 @@ module ActiveRecord
             scope = scope.where(predicate)
 
             if reflection.type
-              scope = scope.where(table[reflection.type].eq(owner.class.base_class.name))
-            end
-
-            conditions.each do |condition|
-              if options[:through] && condition.is_a?(Hash)
-                condition = { table.name => condition }
-              end
-
-              scope = scope.where(interpolate(condition))
+              value    = owner.class.base_class.name
+              bind_val = bind scope, table.table_name, reflection.type.to_s, value
+              scope    = scope.where(table[reflection.type].eq(bind_val))
             end
           else
             # CPK
@@ -66,10 +58,21 @@ module ActiveRecord
             end
 
             scope = scope.joins(join(foreign_table, constraint))
+          end
 
-            unless conditions.empty?
-              scope = scope.where(sanitize(conditions, table))
+          # Exclude the scope of the association itself, because that
+          # was already merged in the #scope method.
+          scope_chain[i].each do |scope_chain_item|
+            klass = i == 0 ? self.klass : reflection.klass
+            item  = eval_scope(klass, scope_chain_item)
+
+            if scope_chain_item == self.reflection.scope
+              scope.merge! item.except(:where, :includes)
             end
+
+            scope.includes! item.includes_values
+            scope.where_values += item.where_values
+            scope.order_values |= item.order_values
           end
         end
 

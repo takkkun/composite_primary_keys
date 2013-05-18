@@ -69,7 +69,7 @@ class ActiveSupport::TestCase
       @klass_info = classes[@key_test]
       @klass, @primary_keys = @klass_info[:class], @klass_info[:primary_keys]
       order = @klass.primary_key.is_a?(String) ? @klass.primary_key : @klass.primary_key.join(',')
-      @first = @klass.find(:first, :order => order)
+      @first = @klass.order(order).first
       yield
     end
   end
